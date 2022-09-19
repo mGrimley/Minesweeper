@@ -1,0 +1,3 @@
+# Minesweeper!
+
+## How to play
