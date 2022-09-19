@@ -1,0 +1,42 @@
+:root {
+    --rowNum: 9;
+    --colNum: 9;
+    --box-size: 50px;
+    --minefield-width: calc(var(--rowNum) * var(--box-size));
+    --minefield-height: calc(var(--colNum) * var(--box-size));
+    --minefield-grid-gap: calc(var(--box-size) / 6)
+}
+
+.container {
+    display: grid;
+    grid-template-rows: 1fr var(--minefield-width) 1fr;
+    grid-template-columns: 1fr var(--minefield-height) 1fr;
+    grid-template-areas: 
+        "header header header"
+        ". minefield ."
+        "footer footer footer";
+        grid-gap: 30px
+}
+
+.header {
+    grid-area: header;
+    text-align: center;
+}
+
+.minefield {
+    grid-area: minefield;
+    display: grid;
+    grid-template-rows: repeat(var(--rowNum), auto);
+    grid-template-columns: repeat(var(--colNum), auto);
+    background-color: darkgray;
+    grid-gap: var(--minefield-grid-gap);
+}
+
+.footer {
+    grid-area: footer;
+    justify-self: center;
+}
+
+.cell {
+    background-color: gray;
+}
