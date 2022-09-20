@@ -13,8 +13,6 @@ const DIFFICULTIES = ['easy', 'medium', 'hard', 'custom']
 /*----- app's state (variables) -----*/ 
 let numMines = currentMines = 10
 
-console.log(currentMines)
-
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
 const mineCountEl = document.querySelector('.mine-count')
@@ -38,7 +36,6 @@ rulesBtnEl.addEventListener('click', handleRulesClick)
 
 
 
-/* THIS IS WRONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (KIND OF) */
 function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
 
@@ -122,37 +119,32 @@ function renderMinefield() {
     }
     
     // Create specified number of cells 
-    for(let i = minefield.rowNum; i >= 1; i--) {
-        
+
+    
+    for(let i = 1; i <= minefield.rowNum; i++) {
+        const row = []
         for(let j = 1; j <= minefield.colNum; j++) {
-            const newCell = document.createElement('div');
+            const cellDiv = document.createElement('div')
+            cellDiv.classList.add('cell', 'hidden', `r${i}`, `c${j}`)
+            document.querySelector('.minefield').appendChild(cellDiv)
 
-            newCell.classList.add('cell', 'hidden', `r${j}`, `c${i}`)
-            
-            document.querySelector('.minefield').appendChild(newCell)
-        }      
+            const cell = {
+                x: i,
+                y: j,
+            }
+
+            row.push(cell)
+        }
+        minefield.cells.push(row)
     }
-
+    
 
 }
 
 const minefield = {    
     rowNum: parseInt(getComputedStyle(minefieldEl).getPropertyValue('--rowNum')), 
     colNum: parseInt(getComputedStyle(minefieldEl).getPropertyValue('--colNum')),
-    numMines: numMines,
-    difficulty: getDifficulty(),
-}
-
-function getDifficulty() {
-
-}
-
-class Cell {
-    constructor(xCoord, yCoord, state) {
-        this.xCoord = xCoord
-        this.yCoord = yCoord
-        this.state = state
-    }
+    cells: [],
 }
 
 renderMinefield(minefield.rowNum, minefield.colNum)
