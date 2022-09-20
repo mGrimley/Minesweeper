@@ -2,12 +2,6 @@
 const MAX_WIDTH = 40
 const MAX_HEIGHT = 40
 const MAX_MINES = 99
-const STATE = {
-    hidden: 'gray', 
-    flagged: 'yellow',
-    mine: 'red',
-    number: 'none',
-}
 const DIFFICULTIES = ['easy', 'medium', 'hard', 'custom']
 
 /*----- app's state (variables) -----*/ 
@@ -16,6 +10,8 @@ let numMines = currentMines = 10
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
 const mineCountEl = document.querySelector('.mine-count')
+
+// Buttons
 const quickResetBtnEl = document.querySelector('.quick-reset')
 const customResetBtnEl = document.querySelector('.custom-reset')
 const rulesBtnEl = document.querySelector('.rules')
@@ -64,17 +60,17 @@ function handleBoardRightClick(evt) {
 
         if(tmpCellState === 'hidden') {
             targetCell.classList.replace(tmpCellState, 'flagged')
-            --currentMines
+            currentMines--
             //currentMines-- ?
         } else if(tmpCellState === 'flagged') {
             targetCell.classList.replace(tmpCellState, 'hidden')
-            ++currentMines
+            currentMines++
         }
 
         
         if(currentMines === 0) {
             mineCountEl.style.color = 'green'
-            //set number green
+            // set number green
         } else if(currentMines < 0) {
             mineCountEl.style.color = 'red'
             // set number red
@@ -86,8 +82,6 @@ function handleBoardRightClick(evt) {
         mineCountEl.textContent = currentMines
         
     }
-
-    // setColor(evt, STATE.flagged)
 }
 
 function handleResetClick(evt) {
@@ -119,18 +113,16 @@ function renderMinefield() {
     }
     
     // Create specified number of cells 
-
-    
-    for(let i = 1; i <= minefield.rowNum; i++) {
+    for(let r = 1; r <= minefield.rowNum; r++) {
         const row = []
-        for(let j = 1; j <= minefield.colNum; j++) {
+        for(let c = 1; c <= minefield.colNum; c++) {
             const cellDiv = document.createElement('div')
-            cellDiv.classList.add('cell', 'hidden', `r${i}`, `c${j}`)
+            cellDiv.classList.add('cell', 'hidden', `r${r}`, `c${c}`)
             document.querySelector('.minefield').appendChild(cellDiv)
 
             const cell = {
-                x: i,
-                y: j,
+                x: r,
+                y: c,
             }
 
             row.push(cell)
@@ -147,9 +139,11 @@ const minefield = {
     cells: [],
 }
 
-renderMinefield(minefield.rowNum, minefield.colNum)
+function init() {
+    renderMinefield()
+}
 
-
+init()
 
 // const card = {
 //     suit: 'c',
