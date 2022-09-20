@@ -40,11 +40,25 @@ rulesBtnEl.addEventListener('click', handleRulesClick)
 
 /* THIS IS WRONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (KIND OF) */
 function handleBoardLeftClick(evt) {
-    setColor(evt, 'lightgray')
+    quickResetBtnEl.disabled = false
+
+    const targetCell = evt.target
+
+
+    if(targetCell.classList.contains('cell')) {
+    const tmpCellState = targetCell.classList[1]
+
+        if(tmpCellState === 'flagged') {
+
+        } else if(tmpCellState === 'hidden') {
+            targetCell.classList.replace(tmpCellState, 'uncovered')
+        }
+    }
 }
 
 function handleBoardRightClick(evt) {
     evt.preventDefault()
+    quickResetBtnEl.disabled = false
 
     const targetCell = evt.target
 
@@ -53,29 +67,30 @@ function handleBoardRightClick(evt) {
 
         if(tmpCellState === 'hidden') {
             targetCell.classList.replace(tmpCellState, 'flagged')
-            mineCountEl.textContent = `Mines Left: ${--currentMines}`
+            --currentMines
+            //currentMines-- ?
         } else if(tmpCellState === 'flagged') {
             targetCell.classList.replace(tmpCellState, 'hidden')
-            mineCountEl.textContent = `Mines Left: ${++currentMines}`
+            ++currentMines
         }
+
+        
+        if(currentMines === 0) {
+            mineCountEl.style.color = 'green'
+            //set number green
+        } else if(currentMines < 0) {
+            mineCountEl.style.color = 'red'
+            // set number red
+        } else {
+            mineCountEl.style.color = 'black'
+            // set number black
+        }
+
+        mineCountEl.textContent = currentMines
         
     }
 
     // setColor(evt, STATE.flagged)
-}
-
-function setColor(evt, color) {
-    if(evt.target.classList.contains('cell')) {
-        const xCoord = (evt.target.classList[1])[1]
-        const yCoord = (evt.target.classList[2])[1]
-        console.log(`${xCoord}, ${yCoord}`)
-
-        if(quickResetBtnEl.disabled) {
-            quickResetBtnEl.disabled = false
-        }
-
-        evt.target.style.background = color;
-    }
 }
 
 function handleResetClick(evt) {
@@ -94,8 +109,11 @@ function renderMinefield() {
     // Reset quick reset button
     quickResetBtnEl.disabled = true
 
+    // Reset mineCountEl color
+    mineCountEl.style.color = 'black'
+
     // Set mines equal to starting amount
-    mineCountEl.textContent = `Mines Left: ${numMines}`
+    mineCountEl.innerHTML = numMines
     currentMines = numMines
 
     // Destroy all previous cells, if any

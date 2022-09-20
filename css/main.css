@@ -47,9 +47,9 @@ body {
     justify-self: center;
 }
 
-.cell {
-    /* background-color: gray; */
-}
+/* .cell {
+
+} */
 
 .cell:hover {
     background-color: #a9a9a9;
@@ -68,5 +68,9 @@ body {
 }
 
 .number {
+    background-color: lightgray;
+}
+
+.uncovered {
     background-color: lightgray;
 }
