@@ -4,7 +4,7 @@
     --box-size: 50px;
     --minefield-width: calc(var(--rowNum) * var(--box-size));
     --minefield-height: calc(var(--colNum) * var(--box-size));
-    --minefield-grid-gap: calc(var(--box-size) / 6)
+    --minefield-grid-gap: calc(var(--box-size) / 10)
 }
 
 .container {
@@ -13,7 +13,7 @@
     grid-template-columns: 1fr var(--minefield-height) 1fr;
     grid-template-areas: 
         "header header header"
-        ". minefield ."
+        ". minefield custom-reset"
         "footer footer footer";
         grid-gap: 30px
 }
