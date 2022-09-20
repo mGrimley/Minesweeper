@@ -7,20 +7,29 @@
     --minefield-grid-gap: calc(var(--box-size) / 10)
 }
 
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
 .container {
     display: grid;
     grid-template-rows: 1fr var(--minefield-width) 1fr;
     grid-template-columns: 1fr var(--minefield-height) 1fr;
     grid-template-areas: 
         "header header header"
-        ". minefield custom-reset"
+        "sidebar minefield custom-reset"
         "footer footer footer";
-        grid-gap: 30px
+    grid-gap: 30px;
 }
 
 .header {
     grid-area: header;
     text-align: center;
+    
 }
 
 .minefield {
@@ -30,6 +39,7 @@
     grid-template-columns: repeat(var(--colNum), auto);
     background-color: darkgray;
     grid-gap: var(--minefield-grid-gap);
+    padding: var(--minefield-grid-gap)
 }
 
 .footer {
@@ -39,4 +49,8 @@
 
 .cell {
     background-color: gray;
+}
+
+.cell:hover {
+    background-color: #a9a9a9;
 }
