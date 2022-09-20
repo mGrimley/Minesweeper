@@ -48,9 +48,25 @@ body {
 }
 
 .cell {
-    background-color: gray;
+    /* background-color: gray; */
 }
 
 .cell:hover {
     background-color: #a9a9a9;
+}
+
+.hidden {
+    background-color: gray;
+}
+
+.flagged {
+    background-color: yellow;
+}
+
+.mine {
+    background-color: red;
+}
+
+.number {
+    background-color: lightgray;
 }

@@ -8,6 +8,7 @@ const STATE = {
     mine: 'red',
     number: 'none',
 }
+const DIFFICULTIES = ['easy', 'medium', 'hard', 'custom']
 
 /*----- app's state (variables) -----*/ 
 let numMines = currentMines = 10
@@ -44,11 +45,23 @@ function handleBoardLeftClick(evt) {
 
 function handleBoardRightClick(evt) {
     evt.preventDefault()
-    if(evt.target.classList.contains('cell')) {
-        mineCountEl.textContent = `Mines Left: ${--currentMines}`
+
+    const targetCell = evt.target
+
+    if(targetCell.classList.contains('cell')) {
+        const tmpCellState = targetCell.classList[1]
+
+        if(tmpCellState === 'hidden') {
+            targetCell.classList.replace(tmpCellState, 'flagged')
+            mineCountEl.textContent = `Mines Left: ${--currentMines}`
+        } else if(tmpCellState === 'flagged') {
+            targetCell.classList.replace(tmpCellState, 'hidden')
+            mineCountEl.textContent = `Mines Left: ${++currentMines}`
+        }
+        
     }
-    
-    setColor(evt, STATE.flagged)
+
+    // setColor(evt, STATE.flagged)
 }
 
 function setColor(evt, color) {
@@ -96,7 +109,7 @@ function renderMinefield() {
         for(let j = 1; j <= minefield.colNum; j++) {
             const newCell = document.createElement('div');
 
-            newCell.classList.add('cell', `r${j}`, `c${i}`)
+            newCell.classList.add('cell', 'hidden', `r${j}`, `c${i}`)
             
             document.querySelector('.minefield').appendChild(newCell)
         }      
@@ -109,7 +122,11 @@ const minefield = {
     rowNum: parseInt(getComputedStyle(minefieldEl).getPropertyValue('--rowNum')), 
     colNum: parseInt(getComputedStyle(minefieldEl).getPropertyValue('--colNum')),
     numMines: numMines,
-    difficulty: ['easy', 'medium', 'hard', 'custom'],
+    difficulty: getDifficulty(),
+}
+
+function getDifficulty() {
+
 }
 
 class Cell {
