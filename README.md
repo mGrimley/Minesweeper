@@ -1,3 +1,18 @@
 # Minesweeper!
 
-## How to play
+## Minesweeper, an introduction
+
+
+## Screenshots
+
+
+## Technologies Used
+HTML
+Javascript
+CSS
+
+
+## Getting Started
+
+
+## Next Steps
