@@ -127,12 +127,32 @@ function renderMinefield() {
     minefield.cells = []
     
     // Create specified number of cells 
+    // let tmpIdx = 0;
+    // for(let r = 1; r <= minefield.rowNum; r++) {
+    //     const row = []
+    //     for(let c = 1; c <= minefield.colNum; c++) {
+    //         const cellDiv = document.createElement('div')
+    //         cellDiv.classList.add('cell', 'hidden', `r${r}`, `c${c}`, `i${++tmpIdx}`)
+    //         // document.querySelector('.minefield').appendChild(cellDiv)
+
+    //         const cell = {
+    //             cellDiv,
+    //             r: r,
+    //             c: c,
+    //             mine: false,
+    //         }
+
+    //         row.push(cell)
+    //     }
+    //     minefield.cells.push(row)
+    // }
+
     let tmpIdx = 0;
-    for(let r = 1; r <= minefield.rowNum; r++) {
-        const row = []
-        for(let c = 1; c <= minefield.colNum; c++) {
+    for(let c = 1; c <= minefield.colNum; c++) {
+        const col = []
+        for(let r = 1; r <= minefield.rowNum; r++) {
             const cellDiv = document.createElement('div')
-            cellDiv.classList.add('cell', 'hidden', `r${r}`, `c${c}`, `i${++tmpIdx}`)
+            cellDiv.classList.add('cell', 'hidden', `c${c}`, `r${r}`, `i${++tmpIdx}`)
             // document.querySelector('.minefield').appendChild(cellDiv)
 
             const cell = {
@@ -142,9 +162,9 @@ function renderMinefield() {
                 mine: false,
             }
 
-            row.push(cell)
+            col.push(cell)
         }
-        minefield.cells.push(row)
+        minefield.cells.push(col)
     }
 
     drawCells()
