@@ -3,9 +3,9 @@ const MAX_WIDTH = 40
 const MAX_HEIGHT = 40
 const MAX_MINES = 99
 const DIFFICULTIES = {
-    EASY: {COLS: 9, ROWS: 9, MINES: 10},
-    MEDIUM: {COLS: 16, ROWS: 16, MINES: 40},
-    HARD: {COLS: 24, ROWS: 24, MINES: 10},
+    EASY: {ROWS: 9, COLS: 9, MINES: 10},
+    MEDIUM: {ROWS: 16, COLS: 16, MINES: 40},
+    HARD: {ROWS: 24, COLS: 24, MINES: 10},
     CUSTOM: 'custom'
 }
 const STATES = {
@@ -16,15 +16,17 @@ const STATES = {
     UNCOVERED: 'uncovered',
 }
 
-const minefield = {    
-    rowNum: DIFFICULTIES.EASY.ROWS, 
-    colNum: DIFFICULTIES.EASY.COLS,
-    cells: [],
-}
-
 
 /*----- app's state (variables) -----*/ 
-let numMines = currentMines = DIFFICULTIES.EASY.MINES
+const minefield = {
+    numRows: DIFFICULTIES.EASY.ROWS, 
+    numCols: DIFFICULTIES.EASY.COLS,
+
+    numMines: DIFFICULTIES.EASY.MINES,
+    currentMines: DIFFICULTIES.EASY.MINES,
+
+    cells: [],
+}
 
 
 /*----- cached element references -----*/ 
@@ -76,21 +78,22 @@ function handleBoardRightClick(evt) {
 
         if(tmpCellState === STATES.HIDDEN) {
             targetCell.classList.replace(tmpCellState, STATES.FLAGGED)
-            currentMines--
+            minefield.currentMines--
         } else if(tmpCellState === STATES.FLAGGED) {
             targetCell.classList.replace(tmpCellState, STATES.HIDDEN)
-            currentMines++
+            minefield.currentMines++
         }
         
         renderMineCountEl()
 
-        mineCountEl.textContent = currentMines
+        mineCountEl.textContent = minefield.currentMines
     }
 }
+
 function renderMineCountEl() {
-    if(currentMines === 0) {
+    if(minefield.currentMines === 0) {
         mineCountEl.style.color = 'green'
-    } else if(currentMines < 0) {
+    } else if(minefield.currentMines < 0) {
         mineCountEl.style.color = 'red'
     } else {
         mineCountEl.style.color = 'black'
@@ -98,14 +101,17 @@ function renderMineCountEl() {
 }
 
 function handleResetClick(evt) {
-    renderMinefield(minefield.rowNum, minefield.colNum)
+    renderMinefield()
 }
+
 function handleCustomResetClick(evt) {
     console.log(evt.target)
 }
+
 function handleRulesClick(evt) {
     console.log(evt.target)
 }
+
 function renderMinefield() {
     // Reset quick reset button
     quickResetBtnEl.disabled = true
@@ -114,47 +120,60 @@ function renderMinefield() {
     mineCountEl.style.color = 'black'
 
     // Set mines equal to starting amount
-    mineCountEl.innerHTML = numMines
-    currentMines = numMines
+    mineCountEl.innerHTML = minefield.numMines
+    minefield.currentMines = minefield.numMines
 
     // Destroy all previous cells, if any
     while(minefieldEl.firstChild) {
         minefieldEl.removeChild(minefieldEl.lastChild)
     }
-     minefield.cells = []
+    minefield.cells = []
 
+    createCells()
+
+    renderCells()
+}
+
+function createCells() {
     let tmpIdx = 0;
-    for(let c = 0; c < minefield.colNum; c++) {
-        const col = []
-        for(let r = 0; r < minefield.rowNum; r++) {
-            // Create div element
+    
+    for(let r = 0; r < minefield.numRows; r++) {
+        const tmpRow = []
+
+        for(let c = 0; c < minefield.numCols; c++) {
+            //Create div  element
             const cellDiv = document.createElement('div')
-            cellDiv.classList.add('cell', STATES.HIDDEN, `c${r}`, `r${c}`, `i${tmpIdx++}`)
+            cellDiv.classList.add('cell', STATES.HIDDEN, `r${r}`, `c${c}`, `i${tmpIdx++}`)
 
             // Create corresponding cell object
             const cell = {
                 cellDiv,
-                c: c,
                 r: r,
+                c: c,
                 mine: false,
             }
 
-            col.push(cell)
-         }
-         minefield.cells.push(col)
-    }
+            // Add the cell to the column
+            tmpRow.push(cell)
+        }
 
-    drawCells()
+        // Add the column to the minefield.cells array
+        minefield.cells.push(tmpRow)
+    }
 }
 
-function drawCells() {
-    minefield.cells.forEach(row => {
-        row.forEach(cell => {
-            minefieldEl.appendChild(cell.cellDiv)
+function renderCells() {
+    minefield.cells.forEach(col => {
+        col.forEach(cell => {
+            minefieldEl.append(cell.cellDiv)
         })
     })
     // minefieldEl.style.setProperty('--row-num', DIFFICULTIES.EASY.ROWS)
     // minefieldEl.style.setProperty('--col-num', DIFFICULTIES.EASY.COLS)
+}
+
+function setMines() {
+
 }
 
 function init() {
