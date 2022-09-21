@@ -124,17 +124,18 @@ function renderMinefield() {
      minefield.cells = []
 
     let tmpIdx = 0;
-    for(let c = 1; c <= minefield.colNum; c++) {
+    for(let c = 0; c < minefield.colNum; c++) {
         const col = []
-        for(let r = 1; r <= minefield.rowNum; r++) {
+        for(let r = 0; r < minefield.rowNum; r++) {
+            // Create div element
             const cellDiv = document.createElement('div')
-            cellDiv.classList.add('cell', STATES.HIDDEN, `c${c}`, `r${r}`, `i${++tmpIdx}`)
-            // document.querySelector('.minefield').appendChild(cellDiv)
+            cellDiv.classList.add('cell', STATES.HIDDEN, `c${r}`, `r${c}`, `i${tmpIdx++}`)
 
+            // Create corresponding cell object
             const cell = {
                 cellDiv,
-                r: r,
                 c: c,
+                r: r,
                 mine: false,
             }
 
