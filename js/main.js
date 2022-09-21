@@ -2,10 +2,23 @@
 const MAX_WIDTH = 40
 const MAX_HEIGHT = 40
 const MAX_MINES = 99
-const DIFFICULTIES = ['easy', 'medium', 'hard', 'custom']
+const DIFFICULTIES = {
+    //difficulty: [rows, cols, mines]
+    EASY: [9, 9, 10],
+    MEDIUM: [16, 16, 40],
+    HARD: [24, 24, 99],
+    CUSTOM: 'custom'
+}
+const STATES = {
+    HIDDEN: 'hidden',
+    FLAGGED: 'flagged',
+    MINE: 'mine',
+    NUMBER: 'number',
+    UNCOVERED: 'uncovered',
+}
 
 /*----- app's state (variables) -----*/ 
-let numMines = currentMines = 10
+let numMines = currentMines = DIFFICULTIES.EASY[2]
 
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
@@ -111,31 +124,46 @@ function renderMinefield() {
     while(minefieldEl.firstChild) {
         minefieldEl.removeChild(minefieldEl.lastChild)
     }
+    minefield.cells = []
     
     // Create specified number of cells 
+    let tmpIdx = 0;
     for(let r = 1; r <= minefield.rowNum; r++) {
         const row = []
         for(let c = 1; c <= minefield.colNum; c++) {
             const cellDiv = document.createElement('div')
-            cellDiv.classList.add('cell', 'hidden', `r${r}`, `c${c}`)
-            document.querySelector('.minefield').appendChild(cellDiv)
+            cellDiv.classList.add('cell', 'hidden', `r${r}`, `c${c}`, `i${++tmpIdx}`)
+            // document.querySelector('.minefield').appendChild(cellDiv)
 
             const cell = {
-                x: r,
-                y: c,
+                cellDiv,
+                r: r,
+                c: c,
+                mine: false,
             }
 
             row.push(cell)
         }
         minefield.cells.push(row)
     }
-    
 
+    drawCells()
+}
+
+function drawCells() {
+    minefield.cells.forEach(row => {
+        row.forEach(cell => {
+            minefieldEl.appendChild(cell.cellDiv)
+        })
+    })
+
+    // minefieldEl.style.setProperty('--row-num', DIFFICULTIES.EASY[0])
+    // minefieldEl.style.setProperty('--col-num', DIFFICULTIES.EASY[1])
 }
 
 const minefield = {    
-    rowNum: parseInt(getComputedStyle(minefieldEl).getPropertyValue('--rowNum')), 
-    colNum: parseInt(getComputedStyle(minefieldEl).getPropertyValue('--colNum')),
+    rowNum: parseInt(getComputedStyle(minefieldEl).getPropertyValue('--row-num')), 
+    colNum: parseInt(getComputedStyle(minefieldEl).getPropertyValue('--col-num')),
     cells: [],
 }
 
