@@ -28,6 +28,8 @@ const minefield = {
     cells: [],
 }
 
+let mines = []
+
 
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
@@ -132,6 +134,8 @@ function renderMinefield() {
     createCells()
 
     renderCells()
+
+    setMines()
 }
 
 function createCells() {
@@ -141,7 +145,7 @@ function createCells() {
         const tmpRow = []
 
         for(let c = 0; c < minefield.numCols; c++) {
-            //Create div  element
+            // Create div  element
             const cellDiv = document.createElement('div')
             cellDiv.classList.add('cell', STATES.HIDDEN, `r${r}`, `c${c}`, `i${tmpIdx++}`)
 
@@ -173,7 +177,22 @@ function renderCells() {
 }
 
 function setMines() {
+    for(let i = 0; i < minefield.numMines; i++) {
+        let tmpIdx = randomCellIdx((minefield.numRows * minefield.numCols) - 1)
 
+        mines.push(tmpIdx)
+    }
+    console.log(mines)
+}
+
+function randomCellIdx(max) {
+    return Math.floor(Math.random() * max)
+}
+
+function checkMine(evt) {
+    if(evt.target.mine === true) {
+        return 'boom'
+    }
 }
 
 function init() {
