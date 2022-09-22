@@ -4,7 +4,7 @@
     --box-size: 50px;
     --minefield-width: calc(var(--row-num) * var(--box-size));
     --minefield-height: calc(var(--col-num) * var(--box-size));
-    --minefield-grid-gap: calc(var(--box-size) / 10)
+    --minefield-padding: calc(var(--box-size) / 10)
 }
 
 * {
@@ -38,8 +38,7 @@ body {
     grid-template-rows: repeat(var(--row-num), auto);
     grid-template-columns: repeat(var(--col-num), auto);
     background-color: darkgray;
-    grid-gap: var(--minefield-grid-gap);
-    padding: var(--minefield-grid-gap);
+    padding: var(--minefield-padding);
 }
 
 .footer {
@@ -47,16 +46,20 @@ body {
     justify-self: center;
 }
 
-.cell:hover {
+/* .cell:hover {
     background-color: #a9a9a9;
-}
+} */
 
 .hidden {
-    background-color: gray;
+    background: gray url("../assets/hidden.png");
+    background-size: cover;
+    image-rendering: pixelated;
 }
 
 .flagged {
-    background-color: yellow;
+    background: yellow url("../assets/flagged.png");
+    background-size: cover;
+    image-rendering: pixelated;
 }
 
 .mine {
@@ -66,6 +69,16 @@ body {
 }
 
 .number {
-    background-color: lightgray;
+    background: lightgray url("../assets/number.png");
+    background-size: cover;
+    image-rendering: pixelated;
     color: white;
 }
+
+/* .number {
+    background: lightgray url("../assets/hidden.png");
+    background-size: cover;
+    image-rendering: pixelated;
+    color: white;
+    transform: rotate(180deg);
+} */
