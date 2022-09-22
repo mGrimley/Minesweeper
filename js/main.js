@@ -28,7 +28,7 @@ const minefield = {
     cells: [],
 }
 
-let mines = []
+let mineIdxs = []
 
 
 /*----- cached element references -----*/ 
@@ -58,13 +58,22 @@ function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
 
     const targetCell = evt.target
+    const targetCellIdx = targetCell.classList[4].substring(1)
+    console.log(targetCellIdx)
     
     if(targetCell.classList.contains('cell')) {
     const tmpCellState = targetCell.classList[1]
         if(tmpCellState === STATES.HIDDEN) {
-            targetCell.classList.replace(tmpCellState, STATES.UNCOVERED)
+            if(mineIdxs.some(mineIdx => mineIdx === targetCellIdx)) {
+                console.log(mineIdx)
+                console.log('boom') // WHY WONT THIS WORK????? 
+            } else {
+                targetCell.classList.replace(tmpCellState, STATES.UNCOVERED)
+            }
+            
             // update corresponding cell's state to uncovered
         }
+        
     }
 }
 
@@ -121,7 +130,7 @@ function renderMinefield() {
     // Reset mineCountEl color
     mineCountEl.style.color = 'black'
 
-    // Set mines equal to starting amount
+    // Set mineIdxs equal to starting amount
     mineCountEl.innerHTML = minefield.numMines
     minefield.currentMines = minefield.numMines
 
@@ -130,6 +139,9 @@ function renderMinefield() {
         minefieldEl.removeChild(minefieldEl.lastChild)
     }
     minefield.cells = []
+
+    // Destroy all previous mineIdxs, if any
+    mineIdxs = []
 
     createCells()
 
@@ -154,6 +166,7 @@ function createCells() {
                 cellDiv,
                 r: r,
                 c: c,
+                state: STATES.HIDDEN,
                 mine: false,
             }
 
@@ -178,15 +191,25 @@ function renderCells() {
 
 function setMines() {
     for(let i = 0; i < minefield.numMines; i++) {
-        let tmpIdx = randomCellIdx((minefield.numRows * minefield.numCols) - 1)
+        let tmpIdx = randomUntakenCellIdx((minefield.numRows * minefield.numCols) - 1)
 
-        mines.push(tmpIdx)
+        mineIdxs.push(tmpIdx)
     }
-    console.log(mines)
+    console.log(mineIdxs)
 }
 
 function randomCellIdx(max) {
     return Math.floor(Math.random() * max)
+}
+
+function randomUntakenCellIdx(max) {
+    let tmpIdx = randomCellIdx(max)
+
+    while(mineIdxs.some(mineIdx => mineIdx === tmpIdx)) {
+        tmpIdx = randomCellIdx(max)
+    }
+
+    return tmpIdx
 }
 
 function checkMine(evt) {
