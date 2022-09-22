@@ -62,57 +62,62 @@ rulesBtnEl.addEventListener('click', handleRulesClick)
 function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
 
-    const targetCell = evt.target
-    const targetCellIdx = targetCell.classList[4].substring(1)
-    
-    if(targetCell.classList.contains('cell')) {
-    const tmpCellState = targetCell.classList[1]
-        if(tmpCellState === STATES.HIDDEN) {
-
-            //checkWin()?
-            if(mineIdxs.some(mineIdx => mineIdx == targetCellIdx)) {
-                console.log(`targetCellIdx: ${targetCellIdx}`)
-                console.log('boom')
-                targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
-
-                // Reveal all mines
-
-                for(let i = 0; i < minefield.numCells; i++) {
-                    // get 
-                }
-
-                // Game over
-            } else {
-                targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
-                console.log(`targetCellIdc: ${targetCellIdx}`)
-                console.log('no boom')
-            }
-        }
+    if(!gameOver) {
+        const targetCell = evt.target
+        const targetCellIdx = targetCell.classList[4].substring(1)
         
+        if(targetCell.classList.contains('cell')) {
+        const tmpCellState = targetCell.classList[1]
+            if(tmpCellState === STATES.HIDDEN) {
+    
+                //checkWin()?
+                if(mineIdxs.some(mineIdx => mineIdx == targetCellIdx)) {
+                    console.log(`targetCellIdx: ${targetCellIdx}`)
+                    console.log('boom')
+                    targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
+    
+                    // Reveal all mines
+    
+                    for(let i = 0; i < minefield.numCells; i++) {
+                        // get 
+                    }
+    
+                    // Game over
+                    gameOver = true
+                } else {
+                    targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
+                    console.log(`targetCellIdc: ${targetCellIdx}`)
+                    console.log('no boom')
+                }
+            }
+            
+        }
     }
 }
 
 function handleBoardRightClick(evt) {
     evt.preventDefault()
 
-    quickResetBtnEl.disabled = false
-
-    const targetCell = evt.target
-
-    if(targetCell.classList.contains('cell')) {
-        const tmpCellState = targetCell.classList[1]
-
-        if(tmpCellState === STATES.HIDDEN) {
-            targetCell.classList.replace(tmpCellState, STATES.FLAGGED)
-            minefield.currentMines--
-        } else if(tmpCellState === STATES.FLAGGED) {
-            targetCell.classList.replace(tmpCellState, STATES.HIDDEN)
-            minefield.currentMines++
+    if(!gameOver) {
+        quickResetBtnEl.disabled = false
+    
+        const targetCell = evt.target
+    
+        if(targetCell.classList.contains('cell')) {
+            const tmpCellState = targetCell.classList[1]
+    
+            if(tmpCellState === STATES.HIDDEN) {
+                targetCell.classList.replace(tmpCellState, STATES.FLAGGED)
+                minefield.currentMines--
+            } else if(tmpCellState === STATES.FLAGGED) {
+                targetCell.classList.replace(tmpCellState, STATES.HIDDEN)
+                minefield.currentMines++
+            }
+            
+            renderMineCountEl()
+    
+            mineCountEl.textContent = minefield.currentMines
         }
-        
-        renderMineCountEl()
-
-        mineCountEl.textContent = minefield.currentMines
     }
 }
 
@@ -154,6 +159,9 @@ function resetMinefield() {
     
     // Reset mineCountEl color
     mineCountEl.style.color = 'black'
+
+    // Reset gameOver
+    gameOver = false
 
     // Set mineIdxs equal to starting amount
     mineCountEl.innerHTML = minefield.numMines

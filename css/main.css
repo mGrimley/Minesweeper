@@ -60,8 +60,7 @@ body {
 }
 
 .mine {
-    background-color: red;
-    background-image: url("../assets/mine.png");
+    background: red url("../assets/mine.png");
     background-size: cover;
     image-rendering: pixelated;
 }
