@@ -21,6 +21,7 @@ const STATES = {
 const minefield = {
     numRows: DIFFICULTIES.EASY.ROWS, 
     numCols: DIFFICULTIES.EASY.COLS,
+    numCells: DIFFICULTIES.EASY.ROWS * DIFFICULTIES.EASY.COLS,
 
     numMines: DIFFICULTIES.EASY.MINES,
     currentMines: DIFFICULTIES.EASY.MINES,
@@ -73,14 +74,19 @@ function handleBoardLeftClick(evt) {
                 console.log(`targetCellIdx: ${targetCellIdx}`)
                 console.log('boom')
                 targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
+
+                // Reveal all mines
+
+                for(let i = 0; i < minefield.numCells; i++) {
+                    // get 
+                }
+
                 // Game over
             } else {
                 targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
                 console.log(`targetCellIdc: ${targetCellIdx}`)
                 console.log('no boom')
             }
-            
-            // update corresponding cell's state to uncovered
         }
         
     }
@@ -186,6 +192,7 @@ function createCells() {
                 c: c,
                 state: STATES.HIDDEN,
                 mine: false,
+                number: null,
             }
 
             // Add the cell to the column
