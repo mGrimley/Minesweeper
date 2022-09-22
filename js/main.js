@@ -32,6 +32,8 @@ let mineIdxs = numberIdxs = []
 
 gameOver = false
 
+let cheatsEnabled = false
+
 
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
@@ -202,7 +204,7 @@ function setMines() {
 
         mineIdxs.push(tmpIdx)
     }
-    console.log(mineIdxs)
+    if(cheatsEnabled) console.log(mineIdxs)
 }
 
 function randomCellIdx(max) {
