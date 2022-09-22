@@ -28,7 +28,9 @@ const minefield = {
     cells: [],
 }
 
-let mineIdxs = []
+let mineIdxs = numberIdxs = []
+
+gameOver = false
 
 
 /*----- cached element references -----*/ 
@@ -59,16 +61,21 @@ function handleBoardLeftClick(evt) {
 
     const targetCell = evt.target
     const targetCellIdx = targetCell.classList[4].substring(1)
-    console.log(targetCellIdx)
     
     if(targetCell.classList.contains('cell')) {
     const tmpCellState = targetCell.classList[1]
         if(tmpCellState === STATES.HIDDEN) {
-            if(mineIdxs.some(mineIdx => mineIdx === targetCellIdx)) {
-                console.log(mineIdx)
-                console.log('boom') // WHY WONT THIS WORK????? 
+
+            //checkWin()?
+            if(mineIdxs.some(mineIdx => mineIdx == targetCellIdx)) {
+                console.log(`targetCellIdx: ${targetCellIdx}`)
+                console.log('boom')
+                targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
+                // Game over
             } else {
-                targetCell.classList.replace(tmpCellState, STATES.UNCOVERED)
+                targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
+                console.log(`targetCellIdc: ${targetCellIdx}`)
+                console.log('no boom')
             }
             
             // update corresponding cell's state to uncovered
