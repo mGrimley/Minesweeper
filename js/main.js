@@ -64,10 +64,11 @@ function handleBoardLeftClick(evt) {
 
     if(!gameOver) {
         const targetCell = evt.target
-        const targetCellIdx = targetCell.classList[4].substring(1)
-        
+       
         if(targetCell.classList.contains('cell')) {
-        const tmpCellState = targetCell.classList[1]
+            const targetCellIdx = targetCell.classList[4].substring(1)
+            const tmpCellState = targetCell.classList[1]
+
             if(tmpCellState === STATES.HIDDEN) {
     
                 //checkWin()?
