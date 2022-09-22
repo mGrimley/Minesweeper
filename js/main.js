@@ -32,7 +32,7 @@ let mineIdxs = numberIdxs = []
 
 gameOver = false
 
-let cheatsEnabled = false
+let cheatsEnabled = true // Flip this for 
 
 
 /*----- cached element references -----*/ 
@@ -133,6 +133,16 @@ function handleRulesClick(evt) {
 }
 
 function renderMinefield() {
+    resetMinefield()
+
+    createCells()
+
+    renderCells()
+
+    setMines()
+}
+
+function resetMinefield() {
     // Reset quick reset button
     quickResetBtnEl.disabled = true
     
@@ -143,20 +153,19 @@ function renderMinefield() {
     mineCountEl.innerHTML = minefield.numMines
     minefield.currentMines = minefield.numMines
 
+    cleanUpPreviousGame()
+}
+
+function cleanUpPreviousGame() {
     // Destroy all previous cells, if any
     while(minefieldEl.firstChild) {
         minefieldEl.removeChild(minefieldEl.lastChild)
     }
     minefield.cells = []
 
-    // Destroy all previous mineIdxs, if any
+    // Destroy all previous mineIdxs and numberIdxs, if any
     mineIdxs = []
-
-    createCells()
-
-    renderCells()
-
-    setMines()
+    numberIdxs = []
 }
 
 function createCells() {

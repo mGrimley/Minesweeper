@@ -39,7 +39,7 @@ body {
     grid-template-columns: repeat(var(--col-num), auto);
     background-color: darkgray;
     grid-gap: var(--minefield-grid-gap);
-    padding: var(--minefield-grid-gap)
+    padding: var(--minefield-grid-gap);
 }
 
 .footer {
@@ -65,4 +65,5 @@ body {
 
 .number {
     background-color: lightgray;
+    color: white;
 }
