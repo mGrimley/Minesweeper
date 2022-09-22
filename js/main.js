@@ -71,27 +71,31 @@ function handleBoardLeftClick(evt) {
             if(tmpCellState === STATES.HIDDEN) {
     
                 //checkWin()?
-                if(mineIdxs.some(mineIdx => mineIdx == targetCellIdx)) {
-                    console.log(`targetCellIdx: ${targetCellIdx}`)
-                    console.log('boom')
-                    targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
-    
-                    // Reveal all mines
-    
-                    for(let i = 0; i < minefield.numCells; i++) {
-                        // get 
-                    }
-    
-                    // Game over
-                    gameOver = true
-                } else {
-                    targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
-                    console.log(`targetCellIdc: ${targetCellIdx}`)
-                    console.log('no boom')
-                }
+                checkForMine(targetCell, targetCellIdx)
             }
             
         }
+    }
+}
+
+function checkForMine(targetCell, targetCellIdx) {
+    if(mineIdxs.some(mineIdx => mineIdx == targetCellIdx)) {
+        console.log(`targetCellIdx: ${targetCellIdx}`)
+        console.log('boom')
+        targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
+
+        // Reveal all mines
+
+        for(let i = 0; i < minefield.numCells; i++) {
+            // get 
+        }
+
+        // Game over
+        gameOver = true
+    } else {
+        targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
+        console.log(`targetCellIdc: ${targetCellIdx}`)
+        console.log('no boom')
     }
 }
 
