@@ -38,7 +38,6 @@ body {
     grid-template-rows: repeat(var(--row-num), auto);
     grid-template-columns: repeat(var(--col-num), auto);
     background-color: darkgray;
-    padding: var(--minefield-padding);
 }
 
 .footer {
@@ -46,9 +45,10 @@ body {
     justify-self: center;
 }
 
-/* .cell:hover {
-    background-color: #a9a9a9;
-} */
+.cell {
+    width: var(--box-size);
+    height: var(--box-size);
+}
 
 .hidden {
     background: gray url("../assets/hidden.png");
