@@ -20,15 +20,20 @@ const minefield = {
     numMines: DIFFICULTIES.EASY.MINES,
     currentMines: DIFFICULTIES.EASY.MINES,
 
+    numRevealed: 0,
+
     cells: [],
     mineLocations: [],
 }
 
 let cheatsEnabled = true
+let gameOver = false
+let winner = false
 
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
 const mineCountEl = document.querySelector('.mine-count')
+const titleEl = document.querySelector('h1')
 
 
 // Buttons
@@ -53,33 +58,35 @@ function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
 
     const targetCell = evt.target
+    if(!gameOver) {
+        if(targetCell.classList.contains('cell')) {
+            const targetCellIdx = targetCell.classList[4].substring(1)
+            const tmpCellState = targetCell.classList[1]
     
-    
-    if(targetCell.classList.contains('cell')) {
-        const targetCellIdx = targetCell.classList[4].substring(1)
-        const tmpCellState = targetCell.classList[1]
-
-        if(tmpCellState === STATES.HIDDEN) {
-            if(!checkForMine(targetCell)) {
-                targetCell.innerText = minefield.cells[targetCellIdx].number
+            if(tmpCellState === STATES.HIDDEN) {
+                if(!checkForMine(targetCell)) {
+                    targetCell.innerText = minefield.cells[targetCellIdx].number
+                    
+                    if(++minefield.numRevealed === minefield.numCols * minefield.numRows - minefield.numMines) {
+                        winner = true
+                        gameOver = true
+                    }
+                } else {
+                    gameOver = true
+                }
+                if(gameOver) {
+                    renderGameOver()
+                }
             }
         }
-        
     }
 }
-
-// function checkWin() {
-//     if(minefield.numNumberCells === minefield.numCells - minefield.numMines) {
-//         win = true
-//     }
-// }
 
 function checkForMine(targetCell) {
     const cellIdx = targetCell.classList[4].substring(1)
 
     if(minefield.cells[cellIdx].mine === true) {
         targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
-        console.log('boom')
         return true
     } else {
         targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
@@ -152,6 +159,13 @@ function resetMinefield() {
 
     // Reset gameOver
     gameOver = false
+    winner = false
+
+    // Remove win/lose message
+    titleEl.innerText = 'Minesweeper'
+
+    // set number of revealed cells back to zero
+    minefield.numRevealed = 0
 
     // Set mineIdxs equal to starting amount
     mineCountEl.innerHTML = minefield.numMines
@@ -211,7 +225,6 @@ function setNumbers() {
             let mineCount = 0;
             const tmpIdx = convertToIndex(c, r)
             
-            // reduce function? Tally up the mines? Yeah................
             mineCount += minefield.cells[tmpIdx].neighbors.nw.mine ? 1 : 0
             mineCount += minefield.cells[tmpIdx].neighbors.n.mine ? 1 : 0
             mineCount += minefield.cells[tmpIdx].neighbors.ne.mine ? 1 : 0
@@ -220,12 +233,16 @@ function setNumbers() {
             mineCount += minefield.cells[tmpIdx].neighbors.sw.mine ? 1 : 0
             mineCount += minefield.cells[tmpIdx].neighbors.s.mine ? 1 : 0
             mineCount += minefield.cells[tmpIdx].neighbors.se.mine ? 1 : 0
+
             minefield.cells[tmpIdx].number = mineCount
         }
     }
 }
 
 function setNeighbors() {
+
+    // flip this from x, y -> i to i -> x, y. Might solve the wrapping neighbor bug
+
     for(let c = 0; c < minefield.numCols; c++) {
         for(let r = 0; r < minefield.numRows; r++) {
             const tmpIdx = convertToIndex(c, r)
@@ -294,6 +311,14 @@ function renderCells() {
 
     // minefieldEl.style.setProperty('--row-num', DIFFICULTIES.EASY.ROWS)
     // minefieldEl.style.setProperty('--col-num', DIFFICULTIES.EASY.COLS)
+}
+
+function renderGameOver() {
+    if(winner) {
+        titleEl.innerText = 'Winner!'
+    } else {
+        titleEl.innerText = 'Try again...'
+    }
 }
 
 function init() {
