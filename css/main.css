@@ -11,8 +11,20 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: 'retro_computer';
+    src: url('../assets/fonts/webfontkit/retro_computer-webfont.woff2') format('woff2'),
+         url('../assets/fonts/webfontkit/retro_computer-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     margin: 0;
+}
+
+h1, h3, .number {
+    font-family: 'retro_computer';
 }
 
 .container {
@@ -49,7 +61,7 @@ body {
     width: var(--box-size);
     height: var(--box-size);
     text-align: center;
-    font-size: calc(var(--box-size) - 50%);
+    font-size: calc(var(--box-size) - 2px);
 }
 
 .hidden {
