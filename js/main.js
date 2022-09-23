@@ -53,12 +53,15 @@ function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
 
     const targetCell = evt.target
+    const targetCellIdx = targetCell.classList[4].substring(1)
     
     if(targetCell.classList.contains('cell')) {
         const tmpCellState = targetCell.classList[1]
 
         if(tmpCellState === STATES.HIDDEN) {
-            checkForMine(targetCell)
+            if(!checkForMine(targetCell)) {
+                targetCell.innerText = minefield.cells[targetCellIdx].number
+            }
         }
         
     }
@@ -76,8 +79,10 @@ function checkForMine(targetCell) {
     if(minefield.cells[cellIdx].mine === true) {
         targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
         console.log('boom')
+        return true
     } else {
         targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
+        return false
     }
 }
 
@@ -187,48 +192,51 @@ function createCells() {
 }
 
 function setNumbers() {
-    // // loop through all cells
-    // for(let c = 0; c < minefield.numCols; c++) {
-    //     for(let r = 0; r < minefield.numRows; r++) {
-    //         // get neighbors of minefield.cells[i]
-    //         let mineCount = 0;
+    // loop through all cells
+    for(let c = 1; c < minefield.numCols-1; c++) {
+        for(let r = 1; r < minefield.numRows-1; r++) {
+            // get neighbors of minefield.cells[i]
+            let mineCount = 0;
             
-    //         // nw
-    //         if(minefield.cells[convertToIndex(c - 1, r - 1)].mine === true) {
-    //             mineCount++
-    //         }
-    //         // n
-    //         if(minefield.cells[convertToIndex(c, r - 1)].mine === true) {
-    //             mineCount++
-    //         }
-    //         // ne
-    //         if(minefield.cells[convertToIndex(c + 1, r - 1)].mine === true) {
-    //             mineCount++
-    //         }
-    //         // w
-    //         if(minefield.cells[convertToIndex(c - 1, r)].mine === true) {
-    //             mineCount++
-    //         }
-    //         // e
-    //         if(minefield.cells[convertToIndex(c + 1, r)].mine === true) {
-    //             mineCount++
-    //         }
-    //         // sw
-    //         if(minefield.cells[convertToIndex(c - 1, r + 1)].mine === true) {
-    //             mineCount++
-    //         }
-    //         // s
-    //         if(minefield.cells[convertToIndex(c, r + 1)].mine === true) {
-    //             mineCount++
-    //         }
-    //         // se
-    //         if(minefield.cells[convertToIndex(c + 1, r + 1)].mine === true) {
-    //             mineCount++
-    //         }
+            // nw
+            if(minefield.cells[convertToIndex(c - 1, r - 1)].mine === true) {
+                mineCount++
+            }
+            // n
+            if(minefield.cells[convertToIndex(c, r - 1)].mine === true) {
+                mineCount++
+            }
+            // ne
+            if(minefield.cells[convertToIndex(c + 1, r - 1)].mine === true) {
+                mineCount++
+            }
+            // w
+            if(minefield.cells[convertToIndex(c - 1, r)].mine === true) {
+                mineCount++
+            }
+            // e
+            if(minefield.cells[convertToIndex(c + 1, r)].mine === true) {
+                mineCount++
+            }
+            // sw
+            if(minefield.cells[convertToIndex(c - 1, r + 1)].mine === true) {
+                mineCount++
+            }
+            // s
+            if(minefield.cells[convertToIndex(c, r + 1)].mine === true) {
+                mineCount++
+            }
+            // se
+            if(minefield.cells[convertToIndex(c + 1, r + 1)].mine === true) {
+                mineCount++
+            }
 
-    //         minefield.cells[convertToIndex(c, r)].number = mineCount
-    //     }
-    // }
+            minefield.cells[convertToIndex(c, r)].number = mineCount
+        }
+    }
+
+    // WOULD A FOR OF LOOP BE BETTER????????????
+
 }
 
 function convertToIndex(x, y) {
