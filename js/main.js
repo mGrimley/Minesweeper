@@ -20,19 +20,26 @@ const minefield = {
     numMines: DIFFICULTIES.EASY.MINES,
     currentMines: DIFFICULTIES.EASY.MINES,
 
+    numRevealed: 0,
+
     cells: [],
     mineLocations: [],
 }
 
+let cheatsEnabled = false
+
+let gameOver = false
+let winner = false
+
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
 const mineCountEl = document.querySelector('.mine-count')
+const titleEl = document.querySelector('h1')
 
 
 // Buttons
 const quickResetBtnEl = document.querySelector('.quick-reset')
 const customResetBtnEl = document.querySelector('.custom-reset')
-const rulesBtnEl = document.querySelector('.rules')
 
 
 /*----- event listeners -----*/ 
@@ -43,50 +50,46 @@ minefieldEl.addEventListener('contextmenu', handleBoardRightClick)
 // Footer buttons
 quickResetBtnEl.addEventListener('click', handleResetClick)
 customResetBtnEl.addEventListener('click', handleCustomResetClick)
-rulesBtnEl.addEventListener('click', handleRulesClick)
 
 
 /*----- functions -----*/
 function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
-    
-    if(!gameOver && !win) {
-        const targetCell = evt.target
-       
+
+    const targetCell = evt.target
+    if(!gameOver) {
         if(targetCell.classList.contains('cell')) {
             const targetCellIdx = targetCell.classList[4].substring(1)
             const tmpCellState = targetCell.classList[1]
-
+    
             if(tmpCellState === STATES.HIDDEN) {
-                checkForMine(targetCell, targetCellIdx)
-                checkWin()
+                if(!checkForMine(targetCell)) {
+                    targetCell.innerText = minefield.cells[targetCellIdx].number
+                    
+                    if(++minefield.numRevealed === minefield.numCols * minefield.numRows - minefield.numMines) {
+                        winner = true
+                        gameOver = true
+                    }
+                } else {
+                    gameOver = true
+                }
+                if(gameOver) {
+                    renderGameOver()
+                }
             }
-            
         }
     }
 }
 
-function checkWin() {
-    if(minefield.numNumberCells === minefield.numCells - minefield.numMines) {
-        win = true
-    }
-}
+function checkForMine(targetCell) {
+    const cellIdx = targetCell.classList[4].substring(1)
 
-function checkForMine(targetCell, targetCellIdx) {
-    if(mineIdxs.some(mineIdx => mineIdx == targetCellIdx)) {
+    if(minefield.cells[cellIdx].mine === true) {
         targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
-
-        // Reveal all mines 
-        // revealAllMines()
-
-        // for(let i = 0; i < minefield.numCells; i++) {
-        //     // get 
-        // } part of revealAllMines()
-
-        // Game over
-        gameOver = true
+        return true
     } else {
         targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
+        return false
     }
 }
 
@@ -134,17 +137,12 @@ function handleCustomResetClick(evt) {
     console.log(evt.target)
 }
 
-function handleRulesClick(evt) {
-    console.log(evt.target)
-}
-
 function renderMinefield() {
     resetMinefield()
 
     createCells()
 
     renderCells()
-
 }
 
 function resetMinefield() {
@@ -156,26 +154,31 @@ function resetMinefield() {
 
     // Reset gameOver
     gameOver = false
+    winner = false
+
+    // Remove win/lose message
+    titleEl.innerText = 'Minesweeper'
+
+    // set number of revealed cells back to zero
+    minefield.numRevealed = 0
 
     // Set mineIdxs equal to starting amount
     mineCountEl.innerHTML = minefield.numMines
     minefield.currentMines = minefield.numMines
 
-    cleanUpPreviousGame()
-}
-
-function cleanUpPreviousGame() {
     // Destroy all previous cells, if any
+    minefield.cells = []
+    minefield.mineLocations = []
+
+    // Remove all previous cell divs
     while(minefieldEl.firstChild) {
         minefieldEl.removeChild(minefieldEl.lastChild)
     }
-    minefield.cells = []
-    minefield.mineLocations = []
 }
 
 function createCells() {
     for(let i = 0; i < minefield.numRows * minefield.numCols; i++) {
-        const c = i % minefield.numCols;
+        const c = i % minefield.numCols
         const r = Math.floor(i / minefield.numCols)
 
         const cellDiv = document.createElement('div')
@@ -187,13 +190,91 @@ function createCells() {
             r,
             i,
             state: STATES.HIDDEN,
-            mine: false
+            mine: false,
+            neighbors: {
+                nw: null, 
+                n: null, 
+                ne: null, 
+                w: null, 
+                e: null, 
+                sw: null, 
+                s: null, 
+                se: null
+            },
+            number: null,
         }
 
         minefield.cells.push(cell)
     }
 
     setMineLocations()
+
+    setNeighbors()
+
+    setNumbers()
+}
+
+function setNumbers() {
+    // loop through all cells
+    for(let c = 0; c < minefield.numCols; c++) {
+        for(let r = 0; r < minefield.numRows; r++) {
+            let mineCount = 0;
+            const tmpIdx = convertToIndex(c, r)
+            
+            mineCount += minefield.cells[tmpIdx].neighbors.nw.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.n.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.ne.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.w.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.e.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.sw.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.s.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.se.mine ? 1 : 0
+
+            minefield.cells[tmpIdx].number = mineCount
+        }
+    }
+}
+
+function setNeighbors() {
+
+    // flip this from x, y -> i to i -> x, y. Might solve the wrapping neighbor bug
+
+    for(let c = 0; c < minefield.numCols; c++) {
+        for(let r = 0; r < minefield.numRows; r++) {
+            const tmpIdx = convertToIndex(c, r)
+
+            const imaginaryNeighbor = {mine: false}
+
+            // nw neighbor
+            let tmpCell = minefield.cells[convertToIndex(c - 1, r - 1)]
+            minefield.cells[tmpIdx].neighbors.nw = tmpCell ? tmpCell : imaginaryNeighbor
+            // n neighbor
+            tmpCell = minefield.cells[convertToIndex(c, r - 1)]
+            minefield.cells[tmpIdx].neighbors.n = tmpCell ? tmpCell : imaginaryNeighbor
+            // ne neighbor
+            tmpCell = minefield.cells[convertToIndex(c + 1, r - 1)]
+            minefield.cells[tmpIdx].neighbors.ne = tmpCell ? tmpCell : imaginaryNeighbor
+            // w neighbor
+            tmpCell = minefield.cells[convertToIndex(c - 1, r)]
+            minefield.cells[tmpIdx].neighbors.w = tmpCell ? tmpCell : imaginaryNeighbor
+            // e neighbor
+            tmpCell = minefield.cells[convertToIndex(c + 1, r)]
+            minefield.cells[tmpIdx].neighbors.e = tmpCell ? tmpCell : imaginaryNeighbor
+            // sw neighbor
+            tmpCell = minefield.cells[convertToIndex(c - 1, r + 1)]
+            minefield.cells[tmpIdx].neighbors.sw = tmpCell ? tmpCell : imaginaryNeighbor
+            // s neighbor
+            tmpCell = minefield.cells[convertToIndex(c, r + 1)]
+            minefield.cells[tmpIdx].neighbors.s = tmpCell ? tmpCell : imaginaryNeighbor
+            // se neighbor
+            tmpCell = minefield.cells[convertToIndex(c + 1, r + 1)]
+            minefield.cells[tmpIdx].neighbors.se = tmpCell ? tmpCell : imaginaryNeighbor
+        }
+    }
+}
+
+function convertToIndex(x, y) {
+    return (minefield.numCols * (y + 1)) - (minefield.numCols - x)
 }
 
 function setMineLocations() {
@@ -202,7 +283,7 @@ function setMineLocations() {
         minefield.cells[tmpMineIdx].mine = true
         minefield.mineLocations.push(tmpMineIdx)
     }
-    // if(cheatsEnabled) console.log(minefield.mineLocations)
+    if(cheatsEnabled) console.log(minefield.mineLocations)
 }
 
 function randomUntakenCellIdx(max) {
@@ -219,23 +300,21 @@ function renderCells() {
     for(let i = 0; i < minefield.cells.length; i++) {
         minefieldEl.appendChild(minefield.cells[i].cellDiv)
     }
+}
 
-    // minefield.cells.forEach(cell => {
-    //     minefieldEl.append(minefield.cells[idx].cellDiv)
-    // })
-    // minefieldEl.style.setProperty('--row-num', DIFFICULTIES.EASY.ROWS)
-    // minefieldEl.style.setProperty('--col-num', DIFFICULTIES.EASY.COLS)
+function renderGameOver() {
+    if(winner) {
+        titleEl.innerText = 'Winner!'
+    } else {
+        titleEl.innerText = 'Try again...'
+    }
 }
 
 function init() {
     renderMinefield()
 }
 
+
+// GAME START
+
 init()
-
-
-// const card = {
-//     suit: 'c',
-//     value: 'A'
-// }
-// document.querySelector('div').classList.add(card.suit + card.value)

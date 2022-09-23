@@ -38,7 +38,6 @@ body {
     grid-template-rows: repeat(var(--row-num), auto);
     grid-template-columns: repeat(var(--col-num), auto);
     background-color: darkgray;
-    padding: var(--minefield-padding);
 }
 
 .footer {
@@ -46,24 +45,28 @@ body {
     justify-self: center;
 }
 
-/* .cell:hover {
-    background-color: #a9a9a9;
-} */
+.cell {
+    width: var(--box-size);
+    height: var(--box-size);
+    text-align: center;
+    font-size: calc(var(--box-size) - 50%);
+}
 
 .hidden {
-    background: gray url("../assets/hidden.png");
+    background: url("../assets/hidden.png");
     background-size: cover;
     image-rendering: pixelated;
 }
 
 .flagged {
-    background: yellow url("../assets/flagged.png");
+    background-image: url("../assets/flagged.png");
     background-size: cover;
     image-rendering: pixelated;
 }
 
 .mine {
-    background: red url("../assets/mine.png");
+    background: url("../assets/mine.png"),
+    url("../assets/number.png");
     background-size: cover;
     image-rendering: pixelated;
 }
@@ -74,11 +77,3 @@ body {
     image-rendering: pixelated;
     color: white;
 }
-
-/* .number {
-    background: lightgray url("../assets/hidden.png");
-    background-size: cover;
-    image-rendering: pixelated;
-    color: white;
-    transform: rotate(180deg);
-} */
