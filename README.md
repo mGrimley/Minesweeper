@@ -22,7 +22,7 @@ Place a flag by right clicking to mark it as dangerous. Reveal all safe squares 
 [Try out my game!](https://mgrimley.github.io/Minesweeper/)
 
 ## Next Steps
-Here's a list of the future feature I'd like to implement
+Here's a list of the future features I'd like to implement
 - Beginner, intermediate, and advanced difficulties
 - Timer with blurred background pause
 - The numbers should change color based on how many mines are nearby
