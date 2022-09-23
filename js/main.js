@@ -180,6 +180,16 @@ function createCells() {
             i,
             state: STATES.HIDDEN,
             mine: false,
+            neighbors: {
+                nw: null, 
+                n: null, 
+                ne: null, 
+                w: null, 
+                e: null, 
+                sw: null, 
+                s: null, 
+                se: null
+            },
             number: null,
         }
 
@@ -188,55 +198,65 @@ function createCells() {
 
     setMineLocations()
 
+    setNeighbors()
+
     setNumbers()
 }
 
 function setNumbers() {
     // loop through all cells
-    for(let c = 1; c < minefield.numCols-1; c++) {
-        for(let r = 1; r < minefield.numRows-1; r++) {
-            // get neighbors of minefield.cells[i]
+    for(let c = 0; c < minefield.numCols; c++) {
+        for(let r = 0; r < minefield.numRows; r++) {
             let mineCount = 0;
+            const tmpIdx = convertToIndex(c, r)
             
-            // nw
-            if(minefield.cells[convertToIndex(c - 1, r - 1)].mine === true) {
-                mineCount++
-            }
-            // n
-            if(minefield.cells[convertToIndex(c, r - 1)].mine === true) {
-                mineCount++
-            }
-            // ne
-            if(minefield.cells[convertToIndex(c + 1, r - 1)].mine === true) {
-                mineCount++
-            }
-            // w
-            if(minefield.cells[convertToIndex(c - 1, r)].mine === true) {
-                mineCount++
-            }
-            // e
-            if(minefield.cells[convertToIndex(c + 1, r)].mine === true) {
-                mineCount++
-            }
-            // sw
-            if(minefield.cells[convertToIndex(c - 1, r + 1)].mine === true) {
-                mineCount++
-            }
-            // s
-            if(minefield.cells[convertToIndex(c, r + 1)].mine === true) {
-                mineCount++
-            }
-            // se
-            if(minefield.cells[convertToIndex(c + 1, r + 1)].mine === true) {
-                mineCount++
-            }
-
-            minefield.cells[convertToIndex(c, r)].number = mineCount
+            // reduce function? Tally up the mines? Yeah................
+            mineCount += minefield.cells[tmpIdx].neighbors.nw.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.n.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.ne.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.w.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.e.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.sw.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.s.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.se.mine ? 1 : 0
+            minefield.cells[tmpIdx].number = mineCount
         }
     }
+}
 
-    // WOULD A FOR OF LOOP BE BETTER????????????
+function setNeighbors() {
+    for(let c = 0; c < minefield.numCols; c++) {
+        for(let r = 0; r < minefield.numRows; r++) {
+            const tmpIdx = convertToIndex(c, r)
 
+            const imaginaryNeighbor = {mine: false}
+
+            // nw neighbor
+            let tmpCell = minefield.cells[convertToIndex(c - 1, r - 1)]
+            minefield.cells[tmpIdx].neighbors.nw = tmpCell ? tmpCell : imaginaryNeighbor
+            // n neighbor
+            tmpCell = minefield.cells[convertToIndex(c, r - 1)]
+            minefield.cells[tmpIdx].neighbors.n = tmpCell ? tmpCell : imaginaryNeighbor
+            // ne neighbor
+            tmpCell = minefield.cells[convertToIndex(c + 1, r - 1)]
+            minefield.cells[tmpIdx].neighbors.ne = tmpCell ? tmpCell : imaginaryNeighbor
+            // w neighbor
+            tmpCell = minefield.cells[convertToIndex(c - 1, r)]
+            minefield.cells[tmpIdx].neighbors.w = tmpCell ? tmpCell : imaginaryNeighbor
+            // e neighbor
+            tmpCell = minefield.cells[convertToIndex(c + 1, r)]
+            minefield.cells[tmpIdx].neighbors.e = tmpCell ? tmpCell : imaginaryNeighbor
+            // sw neighbor
+            tmpCell = minefield.cells[convertToIndex(c - 1, r + 1)]
+            minefield.cells[tmpIdx].neighbors.sw = tmpCell ? tmpCell : imaginaryNeighbor
+            // s neighbor
+            tmpCell = minefield.cells[convertToIndex(c, r + 1)]
+            minefield.cells[tmpIdx].neighbors.s = tmpCell ? tmpCell : imaginaryNeighbor
+            // se neighbor
+            tmpCell = minefield.cells[convertToIndex(c + 1, r + 1)]
+            minefield.cells[tmpIdx].neighbors.se = tmpCell ? tmpCell : imaginaryNeighbor
+        }
+    }
 }
 
 function convertToIndex(x, y) {
