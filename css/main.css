@@ -48,8 +48,6 @@ body {
 .cell {
     width: var(--box-size);
     height: var(--box-size);
-    /* position: relative;
-    top: calc(var(--box-size) / 2); */
     text-align: center;
     font-size: calc(var(--box-size) - 50%);
 }
@@ -61,13 +59,15 @@ body {
 }
 
 .flagged {
-    background: yellow url("../assets/flagged.png");
+    background: yellow;
+    background-image: url("../assets/flagged.png");
     background-size: cover;
     image-rendering: pixelated;
 }
 
 .mine {
-    background: red url("../assets/mine.png");
+    background: url("../assets/mine.png"),
+    url("../assets/number.png");
     background-size: cover;
     image-rendering: pixelated;
 }
