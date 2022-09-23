@@ -53,13 +53,12 @@ body {
 }
 
 .hidden {
-    background: gray url("../assets/hidden.png");
+    background: url("../assets/hidden.png");
     background-size: cover;
     image-rendering: pixelated;
 }
 
 .flagged {
-    background: yellow;
     background-image: url("../assets/flagged.png");
     background-size: cover;
     image-rendering: pixelated;
@@ -78,11 +77,3 @@ body {
     image-rendering: pixelated;
     color: white;
 }
-
-/* .number {
-    background: lightgray url("../assets/hidden.png");
-    background-size: cover;
-    image-rendering: pixelated;
-    color: white;
-    transform: rotate(180deg);
-} */
