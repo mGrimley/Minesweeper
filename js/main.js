@@ -24,6 +24,8 @@ const minefield = {
     mineLocations: [],
 }
 
+let cheatsEnabled = true
+
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
 const mineCountEl = document.querySelector('.mine-count')
@@ -49,42 +51,31 @@ rulesBtnEl.addEventListener('click', handleRulesClick)
 /*----- functions -----*/
 function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
+
+    const targetCell = evt.target
     
-    if(!gameOver && !win) {
-        const targetCell = evt.target
-       
-        if(targetCell.classList.contains('cell')) {
-            const targetCellIdx = targetCell.classList[4].substring(1)
-            const tmpCellState = targetCell.classList[1]
+    if(targetCell.classList.contains('cell')) {
+        const tmpCellState = targetCell.classList[1]
 
-            if(tmpCellState === STATES.HIDDEN) {
-                checkForMine(targetCell, targetCellIdx)
-                checkWin()
-            }
-            
+        if(tmpCellState === STATES.HIDDEN) {
+            checkForMine(targetCell)
         }
+        
     }
 }
 
-function checkWin() {
-    if(minefield.numNumberCells === minefield.numCells - minefield.numMines) {
-        win = true
-    }
-}
+// function checkWin() {
+//     if(minefield.numNumberCells === minefield.numCells - minefield.numMines) {
+//         win = true
+//     }
+// }
 
-function checkForMine(targetCell, targetCellIdx) {
-    if(mineIdxs.some(mineIdx => mineIdx == targetCellIdx)) {
+function checkForMine(targetCell) {
+    const cellIdx = targetCell.classList[4].substring(1)
+
+    if(minefield.cells[cellIdx].mine === true) {
         targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
-
-        // Reveal all mines 
-        // revealAllMines()
-
-        // for(let i = 0; i < minefield.numCells; i++) {
-        //     // get 
-        // } part of revealAllMines()
-
-        // Game over
-        gameOver = true
+        console.log('boom')
     } else {
         targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
     }
@@ -144,7 +135,6 @@ function renderMinefield() {
     createCells()
 
     renderCells()
-
 }
 
 function resetMinefield() {
@@ -166,16 +156,13 @@ function resetMinefield() {
 
 function cleanUpPreviousGame() {
     // Destroy all previous cells, if any
-    while(minefieldEl.firstChild) {
-        minefieldEl.removeChild(minefieldEl.lastChild)
-    }
     minefield.cells = []
     minefield.mineLocations = []
 }
 
 function createCells() {
     for(let i = 0; i < minefield.numRows * minefield.numCols; i++) {
-        const c = i % minefield.numCols;
+        const c = i % minefield.numCols
         const r = Math.floor(i / minefield.numCols)
 
         const cellDiv = document.createElement('div')
@@ -187,13 +174,65 @@ function createCells() {
             r,
             i,
             state: STATES.HIDDEN,
-            mine: false
+            mine: false,
+            number: null,
         }
 
         minefield.cells.push(cell)
     }
 
     setMineLocations()
+
+    setNumbers()
+}
+
+function setNumbers() {
+    // // loop through all cells
+    // for(let c = 0; c < minefield.numCols; c++) {
+    //     for(let r = 0; r < minefield.numRows; r++) {
+    //         // get neighbors of minefield.cells[i]
+    //         let mineCount = 0;
+            
+    //         // nw
+    //         if(minefield.cells[convertToIndex(c - 1, r - 1)].mine === true) {
+    //             mineCount++
+    //         }
+    //         // n
+    //         if(minefield.cells[convertToIndex(c, r - 1)].mine === true) {
+    //             mineCount++
+    //         }
+    //         // ne
+    //         if(minefield.cells[convertToIndex(c + 1, r - 1)].mine === true) {
+    //             mineCount++
+    //         }
+    //         // w
+    //         if(minefield.cells[convertToIndex(c - 1, r)].mine === true) {
+    //             mineCount++
+    //         }
+    //         // e
+    //         if(minefield.cells[convertToIndex(c + 1, r)].mine === true) {
+    //             mineCount++
+    //         }
+    //         // sw
+    //         if(minefield.cells[convertToIndex(c - 1, r + 1)].mine === true) {
+    //             mineCount++
+    //         }
+    //         // s
+    //         if(minefield.cells[convertToIndex(c, r + 1)].mine === true) {
+    //             mineCount++
+    //         }
+    //         // se
+    //         if(minefield.cells[convertToIndex(c + 1, r + 1)].mine === true) {
+    //             mineCount++
+    //         }
+
+    //         minefield.cells[convertToIndex(c, r)].number = mineCount
+    //     }
+    // }
+}
+
+function convertToIndex(x, y) {
+    return (minefield.numCols * (y + 1)) - (minefield.numCols - x)
 }
 
 function setMineLocations() {
@@ -202,7 +241,7 @@ function setMineLocations() {
         minefield.cells[tmpMineIdx].mine = true
         minefield.mineLocations.push(tmpMineIdx)
     }
-    // if(cheatsEnabled) console.log(minefield.mineLocations)
+    if(cheatsEnabled) console.log(minefield.mineLocations)
 }
 
 function randomUntakenCellIdx(max) {
@@ -216,13 +255,14 @@ function randomUntakenCellIdx(max) {
 }
 
 function renderCells() {
+    while(minefieldEl.firstChild) {
+        minefieldEl.removeChild(minefieldEl.lastChild)
+    }
+
     for(let i = 0; i < minefield.cells.length; i++) {
         minefieldEl.appendChild(minefield.cells[i].cellDiv)
     }
 
-    // minefield.cells.forEach(cell => {
-    //     minefieldEl.append(minefield.cells[idx].cellDiv)
-    // })
     // minefieldEl.style.setProperty('--row-num', DIFFICULTIES.EASY.ROWS)
     // minefieldEl.style.setProperty('--col-num', DIFFICULTIES.EASY.COLS)
 }
