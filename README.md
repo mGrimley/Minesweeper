@@ -31,6 +31,7 @@ Here's a list of the future feature I'd like to implement
 - If it detects a mobile device, difficulty heights and widths are swapped
 - Make it impossible to lose on the first click
 - Update the graphics
+- Automatically reveal neighbor cells with a number of zero
 
 ## Screenshots
 ![start](assets/screenshots/start.png)
