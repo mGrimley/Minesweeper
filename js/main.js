@@ -1,19 +1,14 @@
 /*----- constants -----*/ 
-const MAX_WIDTH = 40
-const MAX_HEIGHT = 40
-const MAX_MINES = 99
 const DIFFICULTIES = {
     EASY: {ROWS: 9, COLS: 9, MINES: 10},
     MEDIUM: {ROWS: 16, COLS: 16, MINES: 40},
     HARD: {ROWS: 24, COLS: 24, MINES: 10},
-    CUSTOM: 'custom'
 }
 const STATES = {
     HIDDEN: 'hidden',
     FLAGGED: 'flagged',
     MINE: 'mine',
     NUMBER: 'number',
-    UNCOVERED: 'uncovered',
 }
 
 
@@ -21,20 +16,13 @@ const STATES = {
 const minefield = {
     numRows: DIFFICULTIES.EASY.ROWS, 
     numCols: DIFFICULTIES.EASY.COLS,
-    numCells: DIFFICULTIES.EASY.ROWS * DIFFICULTIES.EASY.COLS,
 
     numMines: DIFFICULTIES.EASY.MINES,
     currentMines: DIFFICULTIES.EASY.MINES,
 
     cells: [],
+    mineLocations: [],
 }
-
-let mineIdxs = numberIdxs = []
-
-gameOver = false
-
-let cheatsEnabled = true // Flip this for 
-
 
 /*----- cached element references -----*/ 
 const minefieldEl = document.querySelector('.minefield')
@@ -61,8 +49,8 @@ rulesBtnEl.addEventListener('click', handleRulesClick)
 /*----- functions -----*/
 function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
-
-    if(!gameOver) {
+    
+    if(!gameOver && !win) {
         const targetCell = evt.target
        
         if(targetCell.classList.contains('cell')) {
@@ -70,33 +58,35 @@ function handleBoardLeftClick(evt) {
             const tmpCellState = targetCell.classList[1]
 
             if(tmpCellState === STATES.HIDDEN) {
-    
-                //checkWin()?
                 checkForMine(targetCell, targetCellIdx)
+                checkWin()
             }
             
         }
     }
 }
 
+function checkWin() {
+    if(minefield.numNumberCells === minefield.numCells - minefield.numMines) {
+        win = true
+    }
+}
+
 function checkForMine(targetCell, targetCellIdx) {
     if(mineIdxs.some(mineIdx => mineIdx == targetCellIdx)) {
-        console.log(`targetCellIdx: ${targetCellIdx}`)
-        console.log('boom')
         targetCell.classList.replace(STATES.HIDDEN, STATES.MINE)
 
-        // Reveal all mines
+        // Reveal all mines 
+        // revealAllMines()
 
-        for(let i = 0; i < minefield.numCells; i++) {
-            // get 
-        }
+        // for(let i = 0; i < minefield.numCells; i++) {
+        //     // get 
+        // } part of revealAllMines()
 
         // Game over
         gameOver = true
     } else {
         targetCell.classList.replace(STATES.HIDDEN, STATES.NUMBER)
-        console.log(`targetCellIdc: ${targetCellIdx}`)
-        console.log('no boom')
     }
 }
 
@@ -155,7 +145,6 @@ function renderMinefield() {
 
     renderCells()
 
-    setMines()
 }
 
 function resetMinefield() {
@@ -181,79 +170,61 @@ function cleanUpPreviousGame() {
         minefieldEl.removeChild(minefieldEl.lastChild)
     }
     minefield.cells = []
-
-    // Destroy all previous mineIdxs and numberIdxs, if any
-    mineIdxs = []
-    numberIdxs = []
+    minefield.mineLocations = []
 }
 
 function createCells() {
-    let tmpIdx = 0;
-    
-    for(let r = 0; r < minefield.numRows; r++) {
-        const tmpRow = []
+    for(let i = 0; i < minefield.numRows * minefield.numCols; i++) {
+        const c = i % minefield.numCols;
+        const r = Math.floor(i / minefield.numCols)
 
-        for(let c = 0; c < minefield.numCols; c++) {
-            // Create div  element
-            const cellDiv = document.createElement('div')
-            cellDiv.classList.add('cell', STATES.HIDDEN, `r${r}`, `c${c}`, `i${tmpIdx++}`)
+        const cellDiv = document.createElement('div')
+        cellDiv.classList.add('cell', STATES.HIDDEN, `c${c}`, `r${r}`, `i${i}`)
 
-            // Create corresponding cell object
-            const cell = {
-                cellDiv,
-                r: r,
-                c: c,
-                state: STATES.HIDDEN,
-                mine: false,
-                number: null,
-            }
-
-            // Add the cell to the column
-            tmpRow.push(cell)
+        const cell = {
+            cellDiv,
+            c,
+            r,
+            i,
+            state: STATES.HIDDEN,
+            mine: false
         }
 
-        // Add the column to the minefield.cells array
-        minefield.cells.push(tmpRow)
+        minefield.cells.push(cell)
     }
+
+    setMineLocations()
 }
 
-function renderCells() {
-    minefield.cells.forEach(col => {
-        col.forEach(cell => {
-            minefieldEl.append(cell.cellDiv)
-        })
-    })
-    // minefieldEl.style.setProperty('--row-num', DIFFICULTIES.EASY.ROWS)
-    // minefieldEl.style.setProperty('--col-num', DIFFICULTIES.EASY.COLS)
-}
-
-function setMines() {
+function setMineLocations() {
     for(let i = 0; i < minefield.numMines; i++) {
-        let tmpIdx = randomUntakenCellIdx((minefield.numRows * minefield.numCols) - 1)
-
-        mineIdxs.push(tmpIdx)
+        let tmpMineIdx = randomUntakenCellIdx((minefield.numRows * minefield.numCols) - 1)
+        minefield.cells[tmpMineIdx].mine = true
+        minefield.mineLocations.push(tmpMineIdx)
     }
-    if(cheatsEnabled) console.log(mineIdxs)
-}
-
-function randomCellIdx(max) {
-    return Math.floor(Math.random() * max)
+    // if(cheatsEnabled) console.log(minefield.mineLocations)
 }
 
 function randomUntakenCellIdx(max) {
-    let tmpIdx = randomCellIdx(max)
+    let tmpIdx = Math.floor(Math.random() * max)
 
-    while(mineIdxs.some(mineIdx => mineIdx === tmpIdx)) {
-        tmpIdx = randomCellIdx(max)
+    while(minefield.mineLocations.some(mineIdx => mineIdx === tmpIdx)) {
+        tmpIdx = Math.floor(Math.random() * max)
     }
 
     return tmpIdx
 }
 
-function checkMine(evt) {
-    if(evt.target.mine === true) {
-        return 'boom'
+function renderCells() {
+    for(let i = 0; i < minefield.cells.length; i++) {
+        minefieldEl.appendChild(minefield.cells[i].cellDiv)
     }
+
+    // minefield.cells.forEach(cell => {
+    //     minefieldEl.append(minefield.cells[idx].cellDiv)
+    // })
+    // minefieldEl.style.setProperty('--row-num', DIFFICULTIES.EASY.ROWS)
+    // minefieldEl.style.setProperty('--col-num', DIFFICULTIES.EASY.COLS)
 }
 
 function init() {
