@@ -9,6 +9,7 @@
 
 * {
     box-sizing: border-box;
+    font-family: 'retro_computer';
 }
 
 @font-face {
@@ -21,10 +22,6 @@
 
 body {
     margin: 0;
-}
-
-h1, h3, .number, button {
-    font-family: 'retro_computer';
 }
 
 .container {
