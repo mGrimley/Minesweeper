@@ -1,7 +1,7 @@
 # Minesweeper!
 
 ## Minesweeper, an introduction
-Since the dawn of time (well, since Windows 3.1 at least) peopple have been playing minesweeper...
+Since the dawn of time (well, since Windows 3.1 circa 1992) peopple have been playing minesweeper...
 
 **Goal of the Game**
 
