@@ -4,15 +4,17 @@
 
 
 ## Screenshots
-
+![start](assets/screenshots/start.png)
+![in progress](assets/screenshots/inProgress.png)
+![win](assets/screenshots/win.png)
+![lose](assets/screenshots/lose.png)
 
 ## Technologies Used
-HTML
-Javascript
-CSS
-
+- Javascript
+- CSS
+- HTML
 
 ## Getting Started
-
+https://mgrimley.github.io/Minesweeper/
 
 ## Next Steps
