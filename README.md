@@ -11,12 +11,6 @@ Click on any unrevealed square to start the game. Numbers on the squares indicat
 
 Place a flag by right clicking to mark it as dangerous. Reveal all safe squares without mines to win the game.
 
-## Screenshots
-![start](assets/screenshots/start.png)
-![in progress](assets/screenshots/inProgress.png)
-![win](assets/screenshots/win.png)
-![lose](assets/screenshots/lose.png)
-
 ## Technologies Used
 - Javascript
 - CSS
@@ -26,3 +20,9 @@ Place a flag by right clicking to mark it as dangerous. Reveal all safe squares 
 [Try out my game!](https://mgrimley.github.io/Minesweeper/)
 
 ## Next Steps
+
+## Screenshots
+![start](assets/screenshots/start.png)
+![in progress](assets/screenshots/inProgress.png)
+![win](assets/screenshots/win.png)
+![lose](assets/screenshots/lose.png)
