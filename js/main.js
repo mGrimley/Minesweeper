@@ -26,7 +26,8 @@ const minefield = {
     mineLocations: [],
 }
 
-let cheatsEnabled = true
+let cheatsEnabled = false
+
 let gameOver = false
 let winner = false
 
@@ -39,7 +40,6 @@ const titleEl = document.querySelector('h1')
 // Buttons
 const quickResetBtnEl = document.querySelector('.quick-reset')
 const customResetBtnEl = document.querySelector('.custom-reset')
-const rulesBtnEl = document.querySelector('.rules')
 
 
 /*----- event listeners -----*/ 
@@ -50,7 +50,6 @@ minefieldEl.addEventListener('contextmenu', handleBoardRightClick)
 // Footer buttons
 quickResetBtnEl.addEventListener('click', handleResetClick)
 customResetBtnEl.addEventListener('click', handleCustomResetClick)
-rulesBtnEl.addEventListener('click', handleRulesClick)
 
 
 /*----- functions -----*/
@@ -138,10 +137,6 @@ function handleCustomResetClick(evt) {
     console.log(evt.target)
 }
 
-function handleRulesClick(evt) {
-    console.log(evt.target)
-}
-
 function renderMinefield() {
     resetMinefield()
 
@@ -171,13 +166,14 @@ function resetMinefield() {
     mineCountEl.innerHTML = minefield.numMines
     minefield.currentMines = minefield.numMines
 
-    cleanUpPreviousGame()
-}
-
-function cleanUpPreviousGame() {
     // Destroy all previous cells, if any
     minefield.cells = []
     minefield.mineLocations = []
+
+    // Remove all previous cell divs
+    while(minefieldEl.firstChild) {
+        minefieldEl.removeChild(minefieldEl.lastChild)
+    }
 }
 
 function createCells() {
@@ -301,16 +297,9 @@ function randomUntakenCellIdx(max) {
 }
 
 function renderCells() {
-    while(minefieldEl.firstChild) {
-        minefieldEl.removeChild(minefieldEl.lastChild)
-    }
-
     for(let i = 0; i < minefield.cells.length; i++) {
         minefieldEl.appendChild(minefield.cells[i].cellDiv)
     }
-
-    // minefieldEl.style.setProperty('--row-num', DIFFICULTIES.EASY.ROWS)
-    // minefieldEl.style.setProperty('--col-num', DIFFICULTIES.EASY.COLS)
 }
 
 function renderGameOver() {
@@ -325,11 +314,7 @@ function init() {
     renderMinefield()
 }
 
+
+// GAME START
+
 init()
-
-
-// const card = {
-//     suit: 'c',
-//     value: 'A'
-// }
-// document.querySelector('div').classList.add(card.suit + card.value)
