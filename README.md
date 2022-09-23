@@ -20,6 +20,15 @@ Place a flag by right clicking to mark it as dangerous. Reveal all safe squares 
 [Try out my game!](https://mgrimley.github.io/Minesweeper/)
 
 ## Next Steps
+Here's a list of the future feature I'd like to implement
+- Beginner, intermediate, and advanced difficulties
+- Timer with blurred background pause
+- The numbers should change color based on how many mines are nearby
+- Custom difficulty where you input the width, height, and number of mines
+- Import and export of game state
+- If it detects a mobile device, difficulty heights and widths are swapped
+- Make it impossible to lose on the first click
+- Update the graphics
 
 ## Screenshots
 ![start](assets/screenshots/start.png)
