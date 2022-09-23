@@ -35,13 +35,12 @@ h1, h3, .number {
         "header header header"
         "sidebar minefield custom-reset"
         "footer footer footer";
-    grid-gap: 30px;
 }
 
 .header {
     grid-area: header;
     text-align: center;
-    
+    padding: 20px;
 }
 
 .minefield {
@@ -55,6 +54,7 @@ h1, h3, .number {
 .footer {
     grid-area: footer;
     justify-self: center;
+    padding: 20px;
 }
 
 .cell {
