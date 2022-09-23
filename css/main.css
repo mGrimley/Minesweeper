@@ -74,14 +74,15 @@ body {
 }
 
 .mine {
-    background: url("../assets/mine.png"),
-    url("../assets/number.png");
+    background-image: 
+        url("../assets/mine.png"),
+        url("../assets/number.png");
     background-size: cover;
     image-rendering: pixelated;
 }
 
 .number {
-    background: lightgray url("../assets/number.png");
+    background-image: url("../assets/number.png");
     background-size: cover;
     image-rendering: pixelated;
     color: white;

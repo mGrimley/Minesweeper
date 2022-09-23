@@ -53,6 +53,22 @@ customResetBtnEl.addEventListener('click', handleCustomResetClick)
 
 
 /*----- functions -----*/
+function setDifficulty(difficulty) {
+    minefield.numRows = DIFFICULTIES[difficulty].ROWS
+    minefield.numCols = DIFFICULTIES[difficulty].COLS
+
+    minefield.numMines = DIFFICULTIES[difficulty].MINES
+    minefield.currentMines = DIFFICULTIES[difficulty].MINES
+
+    //render new minefield size in DOM
+    // get root element
+    let r = document.querySelector(':root')
+
+    r.style.setProperty('--row-num', DIFFICULTIES[difficulty].ROWS)
+    r.style.setProperty('--col-num', DIFFICULTIES[difficulty].COLS)
+}
+
+
 function handleBoardLeftClick(evt) {
     quickResetBtnEl.disabled = false
 
@@ -178,16 +194,17 @@ function resetMinefield() {
 
 function createCells() {
     for(let i = 0; i < minefield.numRows * minefield.numCols; i++) {
-        const c = i % minefield.numCols
-        const r = Math.floor(i / minefield.numCols)
+        const tmpCoord = convertToCoord(i)
+        // const c = i % minefield.numCols
+        // const r = Math.floor(i / minefield.numCols)
 
         const cellDiv = document.createElement('div')
-        cellDiv.classList.add('cell', STATES.HIDDEN, `c${c}`, `r${r}`, `i${i}`)
+        cellDiv.classList.add('cell', STATES.HIDDEN, `c${tmpCoord.x}`, `r${tmpCoord.y}`, `i${i}`)
 
         const cell = {
             cellDiv,
-            c,
-            r,
+            c: tmpCoord.x,
+            r: tmpCoord.y,
             i,
             state: STATES.HIDDEN,
             mine: false,
@@ -212,27 +229,6 @@ function createCells() {
     setNeighbors()
 
     setNumbers()
-}
-
-function setNumbers() {
-    // loop through all cells
-    for(let c = 0; c < minefield.numCols; c++) {
-        for(let r = 0; r < minefield.numRows; r++) {
-            let mineCount = 0;
-            const tmpIdx = convertToIndex(c, r)
-            
-            mineCount += minefield.cells[tmpIdx].neighbors.nw.mine ? 1 : 0
-            mineCount += minefield.cells[tmpIdx].neighbors.n.mine ? 1 : 0
-            mineCount += minefield.cells[tmpIdx].neighbors.ne.mine ? 1 : 0
-            mineCount += minefield.cells[tmpIdx].neighbors.w.mine ? 1 : 0
-            mineCount += minefield.cells[tmpIdx].neighbors.e.mine ? 1 : 0
-            mineCount += minefield.cells[tmpIdx].neighbors.sw.mine ? 1 : 0
-            mineCount += minefield.cells[tmpIdx].neighbors.s.mine ? 1 : 0
-            mineCount += minefield.cells[tmpIdx].neighbors.se.mine ? 1 : 0
-
-            minefield.cells[tmpIdx].number = mineCount
-        }
-    }
 }
 
 function setNeighbors() {
@@ -273,8 +269,35 @@ function setNeighbors() {
     }
 }
 
+function setNumbers() {
+    // loop through all cells
+    for(let c = 0; c < minefield.numCols; c++) {
+        for(let r = 0; r < minefield.numRows; r++) {
+            let mineCount = 0;
+            const tmpIdx = convertToIndex(c, r)
+            
+            mineCount += minefield.cells[tmpIdx].neighbors.nw.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.n.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.ne.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.w.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.e.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.sw.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.s.mine ? 1 : 0
+            mineCount += minefield.cells[tmpIdx].neighbors.se.mine ? 1 : 0
+
+            minefield.cells[tmpIdx].number = mineCount
+        }
+    }
+}
+
 function convertToIndex(x, y) {
     return (minefield.numCols * (y + 1)) - (minefield.numCols - x)
+}
+function convertToCoord(i) {
+    const y = Math.floor(i / minefield.numCols)
+    const x = i - (minefield.numCols * y)
+
+    return {x, y}
 }
 
 function setMineLocations() {
