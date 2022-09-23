@@ -23,7 +23,7 @@ body {
     margin: 0;
 }
 
-h1, h3, .number {
+h1, h3, .number, button {
     font-family: 'retro_computer';
 }
 
